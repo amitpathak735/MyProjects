@@ -1,0 +1,18 @@
+[defaults]
+inventory = ./inventory  # Or the path to your inventory directory/file
+host_key_checking = False # Disable host key checking (for testing, not recommended for production)
+
+---
+- name: Check Windows Server Uptime
+  hosts: all  # Assuming your dynamic inventory populates the 'all' group or a specific group
+  gather_facts: false #optional if you don't need to gather facts
+
+  tasks:
+    - name: Get Windows Uptime
+      win_shell: |
+        (Get-WmiObject win32_operatingsystem).LastBootUpTime
+      register: uptime_result
+
+    - name: Display Uptime
+      debug:
+        msg: "Server {{ inventory_hostname }} uptime: {{ uptime_result.stdout }}"
